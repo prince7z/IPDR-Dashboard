@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" data-color-scheme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPDR Communication Analysis Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1>IPDR Communication Analysis Dashboard</h1>
+                <div class="session-info">
+                    <span class="session-status">● Active Session</span>
+                    <span class="current-time" id="currentTime"></span>
+                </div>
+            </div>
+            <div class="header-stats">
+                <div class="stat-card">
+                    <span class="stat-number" id="totalSessions">12</span>
+                    <span class="stat-label">Total Sessions</span>
+                </div>
+                <div class="stat-card alert">
+                    <span class="stat-number" id="suspiciousCount">4</span>
+                    <span class="stat-label">Alerts</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search and Filter Panel -->
+    <section class="filter-panel">
+        <div class="filter-content">
+            <div class="search-section">
+                <input type="text" class="form-control search-input" placeholder="Search IP addresses, phone numbers, or session IDs..." id="searchInput">
+                <button class="btn btn--primary" id="searchBtn">Search</button>
+            </div>
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label class="form-label">Date Range</label>
+                    <input type="date" class="form-control date-input" id="dateFrom" value="2025-08-28">
+                    <input type="date" class="form-control date-input" id="dateTo" value="2025-08-28">
+                </div>
+                <div class="filter-group">
+                    <label class="form-label">Type</label>
+                    <select class="form-control" id="typeFilter">
+                        <option value="">All Types</option>
+                        <option value="Data">Data</option>
+                        <option value="Voice">Voice</option>
+                        <option value="SMS">SMS</option>
+                        <option value="Email">Email</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="form-label">Alert Level</label>
+                    <select class="form-control" id="alertFilter">
+                        <option value="">All Levels</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn--primary" id="applyFilters">Apply Filters</button>
+                    <button class="btn btn--outline" id="resetFilters">Reset</button>
+                    <button class="btn btn--secondary" id="exportData">Export CSV</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Left Panel - Visual Analytics -->
+        <section class="left-panel">
+            <!-- Network Visualization -->
+            <div class="visualization-card">
+                <div class="panel-header">
+                    <h3>Communication Network</h3>
+                    <div class="network-legend">
+                        <div class="legend-item">
+                            <span class="legend-color normal"></span>
+                            <span>Normal</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color medium"></span>
+                            <span>Medium</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color high"></span>
+                            <span>High</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="network-container" id="networkContainer">
+                    <!-- Network visualization will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Communication Types -->
+            <div class="visualization-card">
+                <div class="panel-header">
+                    <h3>Communication Types</h3>
+                </div>
+                <div class="chart-container-small">
+                    <div style="position: relative; height: 220px;">
+                        <canvas id="typeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Timeline -->
+            <div class="visualization-card">
+                <div class="panel-header">
+                    <h3>Activity Timeline</h3>
+                </div>
+                <div class="chart-container-small">
+                    <div style="position: relative; height: 220px;">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Panel - Session Details -->
+        <section class="sessions-panel">
+            <div class="panel-header">
+                <h3>Session Details</h3>
+                <span class="session-count" id="sessionCount">12 sessions</span>
+            </div>
+            <div class="sessions-table-container">
+                <table class="sessions-table" id="sessionsTable">
+                    <thead>
+                        <tr>
+                            <th data-sort="timestamp">Timestamp</th>
+                            <th data-sort="a_party">A-Party</th>
+                            <th data-sort="b_party">B-Party</th>
+                            <th data-sort="type">Type</th>
+                            <th data-sort="duration">Duration</th>
+                            <th data-sort="data_volume">Data Volume</th>
+                            <th data-sort="alert_level">Alert Level</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sessionsTableBody">
+                        <!-- Dynamic content will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Analytics Section -->
+    <section class="analytics-section">
+        <div class="analytics-header">
+            <h3>Analytics Overview</h3>
+        </div>
+        <div class="analytics-grid">
+            <!-- Statistics Cards -->
+            <div class="stats-cards">
+                <div class="stat-card-large">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="totalComms">12</span>
+                        <span class="stat-label">Total Communications</span>
+                    </div>
+                </div>
+                <div class="stat-card-large">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="uniqueParties">8</span>
+                        <span class="stat-label">Unique A-Parties</span>
+                    </div>
+                </div>
+                <div class="stat-card-large">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="uniqueBParties">8</span>
+                        <span class="stat-label">Unique B-Parties</span>
+                    </div>
+                </div>
+                <div class="stat-card-large alert">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="suspiciousActs">4</span>
+                        <span class="stat-label">Suspicious Activities</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Parties Chart -->
+            <div class="chart-container">
+                <h4>Top Active Parties</h4>
+                <div style="position: relative; height: 280px;">
+                    <canvas id="topPartiesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Side Panel - Anomalies -->
+    <aside class="side-panel" id="sidePanel">
+        <div class="panel-toggle" id="panelToggle">
+            <span>📋</span>
+        </div>
+        <div class="panel-content">
+            <div class="anomalies-section">
+                <h4>Anomaly Alerts</h4>
+                <div class="anomalies-list" id="anomaliesList">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </div>
+            <div class="session-details-section" id="sessionDetailsSection" style="display: none;">
+                <h4>Session Details</h4>
+                <div class="session-detail-content" id="sessionDetailContent">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Session Detail Modal -->
+    <div class="modal hidden" id="sessionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Session Details</h3>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
