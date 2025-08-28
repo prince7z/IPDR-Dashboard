@@ -1,7 +1,5 @@
-// IPDR Dashboard Application
 class IPDRDashboard {
     constructor() {
-        // Use the actual data provided
         this.data = {
             sessions: [
                 {
@@ -208,7 +206,7 @@ class IPDRDashboard {
             }
         };
 
-        this.originalSessions = [...this.data.sessions]; // Keep original data
+        this.originalSessions = [...this.data.sessions];
         this.filteredSessions = [...this.data.sessions];
         this.sortDirection = {};
         this.charts = {};
@@ -275,7 +273,6 @@ class IPDRDashboard {
             });
         }
 
-        // Filter event listeners with proper change detection
         const typeFilter = document.getElementById('typeFilter');
         const alertFilter = document.getElementById('alertFilter');
         const dateFrom = document.getElementById('dateFrom');
@@ -381,7 +378,6 @@ class IPDRDashboard {
     resetFilters() {
         console.log('Resetting filters...');
         
-        // Clear all filter inputs
         const typeFilter = document.getElementById('typeFilter');
         const alertFilter = document.getElementById('alertFilter');
         const dateFrom = document.getElementById('dateFrom');
@@ -394,7 +390,6 @@ class IPDRDashboard {
         if (dateTo) dateTo.value = '2025-08-28';
         if (searchInput) searchInput.value = '';
         
-        // Reset to original dataset
         this.filteredSessions = [...this.originalSessions];
         console.log('Restored sessions count:', this.filteredSessions.length);
         
@@ -1061,7 +1056,6 @@ class IPDRDashboard {
     }
 }
 
-// Initialize dashboard when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new IPDRDashboard();
 });
